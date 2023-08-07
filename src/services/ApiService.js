@@ -12,9 +12,18 @@ export const getBlogs = async () => {
   }
 };
 
+export const getBlog = async (id) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error fetching blogs");
+  }
+};
+
 export const createBlog = async (newBlog) => {
 
-  console.log("newBlog", newBlog);
   try {
     const response = await axios.post(BASE_URL, newBlog);
     return response.data;

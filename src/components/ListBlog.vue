@@ -49,7 +49,9 @@
               <q-btn flat round icon="favorite" color="grey-7"> </q-btn>
             </q-card-actions>
             <q-card-actions class="action">
-              <q-btn flat round icon="edit" color="grey-7"></q-btn>
+              <router-link :to="'/edit/' + blog.id"
+                ><q-btn flat round icon="edit" color="grey-7"></q-btn
+              ></router-link>
               <q-btn
                 flat
                 round
