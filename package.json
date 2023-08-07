@@ -1,7 +1,7 @@
 {
   "name": "blogify",
   "version": "0.0.1",
-  "description": "A Quasar Project",
+  "description": "blogify - write your story",
   "productName": "blogify",
   "author": "divya.sonara <divya.sonara@mywondr.co>",
   "private": true,
@@ -30,7 +30,14 @@
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-vue": "^9.0.0",
     "postcss": "^8.4.14",
-    "prettier": "^2.5.1"
+    "prettier": "^2.5.1",
+    "workbox-build": "^6.6.0",
+    "workbox-cacheable-response": "^6.6.0",
+    "workbox-core": "^6.6.0",
+    "workbox-expiration": "^6.6.0",
+    "workbox-precaching": "^6.6.0",
+    "workbox-routing": "^6.6.0",
+    "workbox-strategies": "^6.6.0"
   },
   "engines": {
     "node": "^18 || ^16 || ^14.19",
