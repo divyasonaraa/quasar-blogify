@@ -1,0 +1,14 @@
+{
+  "blogs": [
+    {
+      "id": 1,
+      "title": "Hello World",
+      "content": "1 content"
+    },
+    {
+      "id": 2,
+      "title": "Mock API Example",
+      "content": "2 content "
+    }
+  ]
+}
