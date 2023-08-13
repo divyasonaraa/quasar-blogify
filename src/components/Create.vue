@@ -28,12 +28,14 @@ export default {
 </script>
 <script setup>
 import { ref, computed, onMounted } from "vue";
+import { uid } from "quasar";
 import {
   createBlog as createBlogApi,
   getBlog,
   updateBlog as updateBlogApi,
 } from "../services/ApiService";
 import { useRouter } from "vue-router";
+import { useQuasar } from "quasar";
 
 const storyPlaceholder = "Write your story";
 const blogTitle = ref("");
@@ -41,18 +43,30 @@ const blogContent = ref("");
 const editMode = ref(false); // Add edit mode state
 const blogId = ref(null); // Add blog ID for editing
 const router = useRouter();
+const $q = useQuasar();
 
 const isEnabled = computed(() => {
   return blogTitle.value && blogContent.value;
 });
 
 const createBlog = async () => {
-  const blog = {
-    title: blogTitle.value,
-    content: blogContent.value,
-    created_at: new Date(),
-  };
-  await createBlogApi(blog);
+  let formdata = new FormData();
+  formdata.append("id", uid());
+  formdata.append("title", blogTitle.value);
+  formdata.append("content", blogContent.value);
+  formdata.append("liked", false);
+  formdata.append("thumps_up", false);
+  formdata.append("created_at", Date.now());
+  formdata.append("updated_at", Date.now());
+  $q.loading.show();
+  await createBlogApi(formdata);
+  $q.loading.hide();
+  $q.notify({
+    message: "Blog Created Successfully!",
+    type: "positive",
+    timeout: 2000,
+  });
+
   router.push("/");
 };
 
