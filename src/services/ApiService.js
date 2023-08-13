@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const BASE_URL = "https://blogify-y15m.onrender.com/blogs";
+const BASE_URL = process.env.API;
 
 export const getBlogs = async () => {
   try {
-    const response = await axios.get(BASE_URL);
+    const response = await axios.get(`${BASE_URL}/blogs`);
     return response.data;
   } catch (error) {
     console.error(error);

@@ -11,7 +11,8 @@
 
 const { configure } = require('quasar/wrappers');
 const path = require('path');
-
+let API_LOCAL = "http://localhost:3000",
+API_PRODUCTION = "https://blogify-y15m.onrender.com";
 module.exports = configure(function (/* ctx */) {
   return {
     eslint: {
@@ -56,6 +57,9 @@ module.exports = configure(function (/* ctx */) {
       },
 
       vueRouterMode: "hash", // available values: 'hash', 'history'
+      env: {
+        API: API_PRODUCTION, // API_LOCAL || API_PRODUCTION
+      },
       // vueRouterBase,
       // vueDevtools,
       // vueOptionsAPI: false,
