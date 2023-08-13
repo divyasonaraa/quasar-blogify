@@ -38,9 +38,13 @@ app.get("/blogs", (request, response) => {
     .then((snapshot) => {
       snapshot.forEach((doc) => {
         blogs.push(doc.data());
-         response.send(blogs);
       });
+      response.send(blogs);
     })
+    .catch((error) => {
+      console.error("Error fetching blogs:", error);
+      response.status(500).send("Internal Server Error");
+    });
 });
 
 

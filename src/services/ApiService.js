@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:3000/blogs";
+const BASE_URL = "https://blogify-y15m.onrender.com/blogs";
 
 export const getBlogs = async () => {
   try {
