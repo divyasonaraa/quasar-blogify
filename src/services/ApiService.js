@@ -48,7 +48,7 @@ export const createBlog = async (newBlog) => {
 
 export const updateBlog = async (updatedBlog) => {
   try {
-    const response = await instance.put(`/${updatedBlog.id}`, updatedBlog);
+    const response = await instance.put(`/blog/${updatedBlog.id}`, updatedBlog);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -59,7 +59,7 @@ export const updateBlog = async (updatedBlog) => {
 
 export const deleteBlog = async (id) => {
   try {
-    await instance.delete(`/${id}`);
+    await instance.delete(`/blog/${id}`);
   } catch (error) {
     console.error(error);
     showErrorNotification("Error deleting blog");
