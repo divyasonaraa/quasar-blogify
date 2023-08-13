@@ -26,27 +26,92 @@
       </q-toolbar>
     </q-header>
 
+    <q-footer elevated reveal class="bg-grey-8" bordered>
+      <div class="constrain">
+        <q-banner inline-actions dense class="bg-grey-8 text-white">
+          <b>Install Blogify? showInsatllbanner: {{ showInsatllbanner }}</b>
+          <template v-slot:avatar>
+            <q-avatar
+              color="grey-9"
+              text-color="white"
+              icon="join_left"
+              font-size="22px"
+            ></q-avatar>
+          </template>
+          <template v-slot:action>
+            <q-btn flat label="Yes" dense class="q-px-sm" @click="installApp" />
+            <q-btn
+              flat
+              label="Later"
+              dense
+              class="q-px-sm"
+              @click="showInsatllbanner = false"
+            />
+            <q-btn
+              flat
+              label="Never"
+              dense
+              class="q-px-sm"
+              @click="neverShowInstallAppBanner"
+            />
+          </template>
+        </q-banner>
+      </div>
+    </q-footer>
+
     <q-page-container class="GPL__page-container">
       <router-view />
     </q-page-container>
   </q-layout>
 </template>
 
-<script>
+<script setup>
 import { useRouter } from "vue-router";
-export default {
-  name: "GooglePhotosLayout",
-  setup() {
-    const router = useRouter();
+import { onMounted, ref } from "vue";
+import { useQuasar } from "quasar";
+const router = useRouter();
+const showInsatllbanner = ref(false);
+const $q = useQuasar();
+let deferredPrompt;
 
-    const redirectToNewRoute = () => {
-      router.push("/new");
-    };
+onMounted(() => {
+  // let neverShowInstallBanner = $q.localStorage.getItem(
+  //   "neverShowInstallBanner"
+  // );
+  // if (!neverShowInstallBanner) {
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    showInsatllbanner.value = true;
+    // setTimeout(() => {
+    //   showInsatllbanner.value = true;
+    // }, 3000);
+  });
+  // }
+});
 
-    return {
-      redirectToNewRoute,
-    };
-  },
+const installApp = async () => {
+  showInsatllbanner.value = false;
+  // deferredPrompt is a global variable we've been using in the sample to capture the `beforeinstallevent`
+  deferredPrompt.prompt();
+  // Find out whether the user confirmed the installation or not
+  const { outcome } = await deferredPrompt.userChoice;
+  // The deferredPrompt can only be used once.
+  deferredPrompt = null;
+  // Act on the user's choice
+  if (outcome === "accepted") {
+    console.log("User accepted the install prompt.");
+  } else if (outcome === "dismissed") {
+    console.log("User dismissed the install prompt");
+  }
+};
+
+const neverShowInstallAppBanner = () => {
+  showInsatllbanner.value = false;
+  $q.localStorage.set("neverShowInstallBanner", true);
+};
+const redirectToNewRoute = () => {
+  router.push("/new");
 };
 </script>
 
