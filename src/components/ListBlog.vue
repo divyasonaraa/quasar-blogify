@@ -28,7 +28,9 @@
             <q-card-section horizontal>
               <q-card-section class="q-pt-xs">
                 <div class="text-overline">{{ blog.created_at }}</div>
-                <div class="text-h5 q-mt-sm q-mb-xs">{{ blog.title }}</div>
+                <div class="text-h5 q-mt-sm q-mb-xs text-title">
+                  {{ blog.title }}
+                </div>
                 <div class="text-caption text-grey">
                   {{ blog.content }}
                 </div>

@@ -8,11 +8,10 @@
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
 
-
-const { configure } = require('quasar/wrappers');
-const path = require('path');
+const { configure } = require("quasar/wrappers");
+const path = require("path");
 let API_LOCAL = "http://localhost:3000",
-API_PRODUCTION = "https://blogify-y15m.onrender.com";
+  API_PRODUCTION = "https://blogify-y15m.onrender.com";
 module.exports = configure(function (/* ctx */) {
   return {
     eslint: {
@@ -121,7 +120,7 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ["Loading","Notify"],
+      plugins: ["Loading", "Notify", "LocalStorage"],
     },
 
     // animations: 'all', // --- includes all animations
@@ -163,7 +162,7 @@ module.exports = configure(function (/* ctx */) {
 
     // https://v2.quasar.dev/quasar-cli/developing-pwa/configuring-pwa
     pwa: {
-      workboxMode: "generateSW", // or 'injectManifest'
+      workboxMode: "injectManifest", // or 'injectManifest'
       injectPwaMetaTags: true,
       swFilename: "sw.js",
       manifestFilename: "manifest.json",

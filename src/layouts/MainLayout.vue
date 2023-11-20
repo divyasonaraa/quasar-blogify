@@ -1,8 +1,13 @@
 <template>
   <q-layout view="lHh Lpr fff" class="bg-grey-1">
-    <q-header elevated class="bg-white text-grey-8" height-hint="64">
-      <q-toolbar class="GPL__toolbar" style="height: 64px">
-        <q-icon name="join_left" size="xl" />
+    <q-header elevated class="bg-white text-grey-8">
+      <q-toolbar
+        class="GPL__toolbar"
+        :style="{ height: isMobile ? '56px' : '64px' }"
+      >
+        <q-icon name="join_left" size="xl"></q-icon>
+        <span class="text-grand-hotel">Blogify</span>
+
         <q-space />
 
         <div class="q-gutter-sm row items-center no-wrap">
@@ -13,7 +18,7 @@
             @click="redirectToNewRoute"
           ></q-icon>
           <q-btn round dense flat color="grey-8" icon="notifications">
-            <q-badge color="red" text-color="white" floating> 2 </q-badge>
+            <q-badge color="red" text-color="white" floating>2</q-badge>
             <q-tooltip>Notifications</q-tooltip>
           </q-btn>
           <q-btn round flat>
@@ -29,7 +34,7 @@
     <q-footer elevated reveal class="bg-grey-8" bordered>
       <div class="constrain">
         <q-banner inline-actions dense class="bg-grey-8 text-white">
-          <b>Install Blogify? showInsatllbanner: {{ showInsatllbanner }}</b>
+          <b>Install Blogify? </b>
           <template v-slot:avatar>
             <q-avatar
               color="grey-9"
@@ -75,35 +80,36 @@ const $q = useQuasar();
 let deferredPrompt;
 
 onMounted(() => {
-  // let neverShowInstallBanner = $q.localStorage.getItem(
-  //   "neverShowInstallBanner"
-  // );
-  // if (!neverShowInstallBanner) {
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    showInsatllbanner.value = true;
-    // setTimeout(() => {
-    //   showInsatllbanner.value = true;
-    // }, 3000);
-  });
-  // }
+  let neverShowInstallBanner = $q.localStorage.getItem(
+    "neverShowInstallBanner"
+  );
+  if (!neverShowInstallBanner) {
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      showInsatllbanner.value = true;
+      setTimeout(() => {
+        showInsatllbanner.value = true;
+      }, 3000);
+    });
+  }
 });
 
-const installApp = async () => {
+const installApp = () => {
+  // Hide the app provided install promotion
   showInsatllbanner.value = false;
-  // deferredPrompt is a global variable we've been using in the sample to capture the `beforeinstallevent`
+
+  // Show the install prompt
   deferredPrompt.prompt();
-  // Find out whether the user confirmed the installation or not
-  const { outcome } = await deferredPrompt.userChoice;
-  // The deferredPrompt can only be used once.
-  deferredPrompt = null;
-  // Act on the user's choice
-  if (outcome === "accepted") {
-    console.log("User accepted the install prompt.");
-  } else if (outcome === "dismissed") {
-    console.log("User dismissed the install prompt");
-  }
+  // Wait for the user to respond to the prompt
+  deferredPrompt.userChoice.then((choiceResult) => {
+    if (choiceResult.outcome === "accepted") {
+      console.log("User accepted the install prompt");
+      neverShowAppInstallBanner();
+    } else {
+      console.log("User dismissed the install prompt");
+    }
+  });
 };
 
 const neverShowInstallAppBanner = () => {
