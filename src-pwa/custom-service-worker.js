@@ -52,7 +52,10 @@ registerRoute(
   })
 );
 
-registerRoute((url) => url.pathname.startsWith("/blogs"), new NetworkFirst());
+registerRoute(
+  ({ url }) => url.pathname.startsWith("/blogs"),
+  new NetworkFirst()
+);
 
 registerRoute(
   ({ url }) => url.protocol === "http:" || url.protocol === "https:",
