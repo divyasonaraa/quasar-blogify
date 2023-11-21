@@ -6,14 +6,17 @@
  * quasar.config.js > pwa > workboxMode is set to "injectManifest"
  */
 
+import { CacheableResponsePlugin } from "workbox-cacheable-response";
 import { clientsClaim } from "workbox-core";
+import { ExpirationPlugin } from "workbox-expiration";
 import {
   precacheAndRoute,
   cleanupOutdatedCaches,
   createHandlerBoundToURL,
 } from "workbox-precaching";
 import { registerRoute, NavigationRoute } from "workbox-routing";
-import { StaleWhileRevalidate } from "workbox-strategies";
+import { NetworkFirst, StaleWhileRevalidate } from "workbox-strategies";
+import { CacheFirst } from "workbox-strategies";
 
 self.skipWaiting();
 clientsClaim();
@@ -33,6 +36,24 @@ if (process.env.MODE !== "ssr" || process.env.PROD) {
     )
   );
 }
+
+registerRoute(
+  ({ url }) => url.host.startsWith("fonts.googleapi.com"),
+  new CacheFirst({
+    cacheName: "google-fonts",
+    plugins: [
+      new ExpirationPlugin({
+        maxEntries: 30,
+      }),
+      new CacheableResponsePlugin({
+        statuses: [0, 200],
+      }),
+    ],
+  })
+);
+
+registerRoute((url) => url.pathname.startsWith("/blogs"), new NetworkFirst());
+
 registerRoute(
   ({ url }) => url.protocol === "http:" || url.protocol === "https:",
   new StaleWhileRevalidate()

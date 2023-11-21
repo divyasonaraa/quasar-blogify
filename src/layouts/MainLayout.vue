@@ -1,13 +1,9 @@
 <template>
   <q-layout view="lHh Lpr fff" class="bg-grey-1">
     <q-header elevated class="bg-white text-grey-8">
-      <q-toolbar
-        class="GPL__toolbar"
-        :style="{ height: isMobile ? '56px' : '64px' }"
-      >
-        <q-icon name="join_left" size="xl"></q-icon>
+      <q-toolbar class="GPL__toolbar">
+        <q-icon name="join_left" size="xl" class="q-mr-md"></q-icon>
         <span class="text-grand-hotel">Blogify</span>
-
         <q-space />
 
         <div class="q-gutter-sm row items-center no-wrap">
