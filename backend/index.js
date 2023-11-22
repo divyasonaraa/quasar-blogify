@@ -51,6 +51,28 @@ app.get("/blogs", (request, response) => {
     });
 });
 
+/* endpoint - get blog by id */
+app.get("/blog/:id", (request, response) => {
+  response.set("Access-Control-Allow-Origin", "*");
+
+  const { id } = request.params;
+
+  db.collection("blogs")
+    .doc(id)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        response.send(doc.data());
+      } else {
+        response.status(404).send("Blog not found");
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching blog:", error);
+      response.status(500).send("Internal Server Error");
+    });
+});
+
 /*
 endpoint- create post
 */
