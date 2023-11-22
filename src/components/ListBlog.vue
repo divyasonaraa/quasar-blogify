@@ -103,24 +103,40 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onActivated } from "vue";
 import { getBlogs, deleteBlog } from "src/services/ApiService";
 import { openDB } from "idb";
+import { useQuasar } from "quasar";
+
 const tab = ref("For you");
 const blogList = ref([]);
 const isLoading = ref(false);
+const $q = useQuasar();
 
+onActivated(async () => {});
 onMounted(async () => {
-  isLoading.value = true;
-  if (!navigator.onLine) {
-    getOfflineBlogs();
-    listenForOfflinePostUploaded();
-  } else {
-    blogList.value = await getBlogs();
-  }
-  isLoading.value = false;
+  getBlogList();
+  listenForOfflinePostUploaded();
 });
 
+const getBlogList = async () => {
+  isLoading.value = true;
+
+  try {
+    blogList.value = await getBlogs();
+    isLoading.value = false;
+
+    if (!navigator.onLine) {
+      getOfflineBlogs();
+    }
+  } catch (error) {
+    $q.notify({
+      title: "Error",
+      message: "Could not download blogs.",
+    });
+    isLoading.value = false;
+  }
+};
 const deleteBlogByID = async (id) => {
   await deleteBlog(id);
   blogList.value = await getBlogs();
