@@ -40,9 +40,7 @@ export const createBlog = async (newBlog) => {
     const response = await instance.post("/blog", newBlog);
     return response.data;
   } catch (error) {
-    console.error(error);
-    showErrorNotification("Error creating blog");
-    throw new Error("Error creating blog");
+    return new Error(error);
   }
 };
 
@@ -51,7 +49,6 @@ export const updateBlog = async (updatedBlog) => {
     const response = await instance.put(`/blog/${updatedBlog.id}`, updatedBlog);
     return response.data;
   } catch (error) {
-    console.error(error);
     showErrorNotification("Error updating blog");
     throw new Error("Error updating blog");
   }

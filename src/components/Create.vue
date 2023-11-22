@@ -49,27 +49,52 @@ const isEnabled = computed(() => {
   return blogTitle.value && blogContent.value;
 });
 
-const createBlog = async () => {
-  let formdata = new FormData();
-  formdata.append("id", uid());
-  formdata.append("title", blogTitle.value);
-  formdata.append("content", blogContent.value);
-  formdata.append("liked", false);
-  formdata.append("thumps_up", false);
-  formdata.append("created_at", Date.now());
-  formdata.append("updated_at", Date.now());
-  $q.loading.show();
-  await createBlogApi(formdata);
-  $q.loading.hide();
-  $q.notify({
-    message: "Blog Created Successfully!",
-    type: "positive",
-    timeout: 2000,
-  });
+const createBlog = async (blogTitle, blogContent) => {
+  try {
+    const formData = new FormData();
+    formData.append("id", uid());
+    formData.append("title", blogTitle);
+    formData.append("content", blogContent);
+    formData.append("liked", false);
+    formData.append("thumps_up", false);
+    formData.append("created_at", Date.now());
+    formData.append("updated_at", Date.now());
 
-  router.push("/");
+    // Show loading indicator
+    $q.loading.show();
+
+    // Make API call to create a blog
+    const response = await createBlogApi(formData);
+
+    // Hide loading indicator
+    $q.loading.hide();
+
+    // Notify user about successful blog creation
+    $q.notify({
+      message: "Blog Created Successfully!",
+      type: "positive",
+      timeout: 2000,
+    });
+
+    // Redirect to home page
+    router.push("/");
+  } catch (error) {
+    console.error("Error creating blog:", error);
+
+    // Check if the error is a network error
+    if (!navigator.onLine && isBackgroundSyncSupported.value) {
+      // Redirect to the home page
+      router.push("/");
+    } else {
+      // Notify user about the error
+      $q.notify({
+        message: "Error creating blog. Please try again.",
+        type: "negative",
+        timeout: 2000,
+      });
+    }
+  }
 };
-
 const updateBlog = async () => {
   const updatedBlog = {
     id: blogId.value,
@@ -91,6 +116,12 @@ onMounted(async () => {
     blogTitle.value = blogData.title;
     blogContent.value = blogData.content;
   }
+});
+
+//computed
+
+const isBackgroundSyncSupported = computed(() => {
+  return "serviceWorker" in navigator && "SyncManager" in window ? true : false;
 });
 </script>
 

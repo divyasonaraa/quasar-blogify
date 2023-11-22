@@ -17,6 +17,7 @@ import {
 import { registerRoute, NavigationRoute } from "workbox-routing";
 import { NetworkFirst, StaleWhileRevalidate } from "workbox-strategies";
 import { CacheFirst } from "workbox-strategies";
+import { Queue } from "workbox-background-sync";
 
 self.skipWaiting();
 clientsClaim();
@@ -25,6 +26,20 @@ clientsClaim();
 precacheAndRoute(self.__WB_MANIFEST);
 
 cleanupOutdatedCaches();
+
+let backgroundSync = "sync" in self.registration ? true : false;
+
+/*
+   queue- create post
+ */
+let createBlogQueue = null;
+if (backgroundSync) {
+  createBlogQueue = new Queue("createBlogQueue");
+}
+
+/*
+  caching strategies
+*/
 
 // Non-SSR fallback to index.html
 // Production SSR fallback to offline.html (except for dev)
@@ -61,3 +76,28 @@ registerRoute(
   ({ url }) => url.protocol === "http:" || url.protocol === "https:",
   new StaleWhileRevalidate()
 );
+
+/*
+    Events - fetch
+*/
+if (backgroundSync) {
+  self.addEventListener("fetch", (event) => {
+    // Add in your own criteria here to return early if this
+    // isn't a request that should use background sync.
+    if (event.request.method !== "POST") {
+      return;
+    }
+
+    const bgSyncLogic = async () => {
+      try {
+        const response = await fetch(event.request.clone());
+        return response;
+      } catch (error) {
+        await createBlogQueue.pushRequest({ request: event.request });
+        return error;
+      }
+    };
+
+    event.respondWith(bgSyncLogic());
+  });
+}
