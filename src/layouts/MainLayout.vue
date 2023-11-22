@@ -61,11 +61,7 @@
     </q-footer>
 
     <q-page-container class="GPL__page-container">
-      <router-view v-slot="{ Component }">
-        <transition>
-          <component :is="Component"></component>
-        </transition>
-      </router-view>
+      <router-view></router-view>
     </q-page-container>
   </q-layout>
 </template>

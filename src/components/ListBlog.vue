@@ -34,7 +34,7 @@
                 >Stored offline</q-badge
               >
               <q-card-section class="q-pt-xs">
-                <div class="text-overline">{{ blog.created_at }}</div>
+                <div class="text-overline">{{ niceDate(blog.created_at) }}</div>
                 <div class="text-h5 q-mt-sm q-mb-xs text-title">
                   {{ blog.title }}
                 </div>
@@ -103,17 +103,16 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted, onActivated } from "vue";
+import { ref, onMounted } from "vue";
 import { getBlogs, deleteBlog } from "src/services/ApiService";
 import { openDB } from "idb";
-import { useQuasar } from "quasar";
+import { useQuasar, date } from "quasar";
 
 const tab = ref("For you");
 const blogList = ref([]);
 const isLoading = ref(false);
 const $q = useQuasar();
 
-onActivated(async () => {});
 onMounted(async () => {
   getBlogList();
   listenForOfflinePostUploaded();
@@ -190,6 +189,10 @@ const listenForOfflinePostUploaded = () => {
       }
     });
   }
+};
+
+const niceDate = (value) => {
+  return date.formatDate(value, "MMMM D h:mmA");
 };
 </script>
 <style scoped>
