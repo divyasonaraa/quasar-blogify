@@ -110,17 +110,15 @@ const tab = ref("For you");
 const blogList = ref([]);
 const isLoading = ref(false);
 
-onActivated(async () => {
+onMounted(async () => {
   isLoading.value = true;
   if (!navigator.onLine) {
     getOfflineBlogs();
+    listenForOfflinePostUploaded();
   } else {
     blogList.value = await getBlogs();
   }
   isLoading.value = false;
-});
-onMounted(async () => {
-  listenForOfflinePostUploaded();
 });
 
 const deleteBlogByID = async (id) => {
