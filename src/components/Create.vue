@@ -16,7 +16,7 @@
         :label="editMode ? 'Update' : 'Publish'"
         class="flex-end"
         :disable="!isEnabled"
-        @click="editMode ? updateBlog() : createBlog()"
+        @click="editMode ? updateBlog() : createBlog(blogTitle, blogContent)"
       />
     </div>
   </form>
@@ -83,6 +83,12 @@ const createBlog = async (blogTitle, blogContent) => {
 
     // Check if the error is a network error
     if (!navigator.onLine && isBackgroundSyncSupported.value) {
+      // Notify user about successful blog creation
+      $q.notify({
+        message: "Offline Blog Created Successfully!",
+        type: "positive",
+        timeout: 2000,
+      });
       // Redirect to the home page
       router.push("/");
     } else {
