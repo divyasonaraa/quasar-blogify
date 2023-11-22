@@ -118,21 +118,28 @@ app.put("/blog/:id", (request, response) => {
   response.set("Access-Control-Allow-Origin", "*");
 
   const { id } = request.params;
-  const updatedBlog = request.body; // Assuming the updated blog data is sent in the request body
+  let updatedBlog = {};
 
-  db.collection("blogs")
-    .doc(id)
-    .update({
-      ...updatedBlog,
-      updated_at: FieldValue.serverTimestamp(),
-    })
-    .then(() => {
-      response.send("blog updated: " + id);
-    })
-    .catch((error) => {
-      console.error("Error updating blog:", error);
-      response.status(500).send("Internal Server Error");
-    });
+  // Parse the request body
+  request.on("data", (chunk) => {
+    updatedBlog = JSON.parse(chunk.toString());
+  });
+
+  request.on("end", () => {
+    db.collection("blogs")
+      .doc(id)
+      .update({
+        ...updatedBlog,
+        updated_at: FieldValue.serverTimestamp(),
+      })
+      .then(() => {
+        response.send("blog updated: " + id);
+      })
+      .catch((error) => {
+        console.error("Error updating blog:", error);
+        response.status(500).send("Internal Server Error");
+      });
+  });
 });
 
 /* endpoint - delete post */
