@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "busboy": "^1.6.0",
+    "cors": "^2.8.5",
     "express": "^4.18.2",
     "firebase-admin": "^11.10.1",
     "uuid-v4": "^0.1.0"

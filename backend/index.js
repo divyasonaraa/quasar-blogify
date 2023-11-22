@@ -1,5 +1,6 @@
 /* dependancies*/
 const express = require("express");
+const cors = require("cors");
 const {
   initializeApp,
   applicationDefault,
@@ -18,6 +19,7 @@ let UUID = require("uuid-v4");
 
 /* config - express*/
 const app = express();
+app.use(cors());
 
 /*
 Config- firebase
