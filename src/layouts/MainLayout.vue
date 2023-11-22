@@ -61,7 +61,9 @@
     </q-footer>
 
     <q-page-container class="GPL__page-container">
-      <router-view />
+      <keep-alive>
+        <router-view />
+      </keep-alive>
     </q-page-container>
   </q-layout>
 </template>

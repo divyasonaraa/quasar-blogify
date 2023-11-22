@@ -20,12 +20,19 @@
         <template v-if="!isLoading && blogList.length">
           <q-card
             class="my-card q-ma-lg"
+            :class="{ 'bg-red-1': blog.offline }"
             flat
             bordered
             v-for="blog in blogList"
             :key="blog.key"
           >
             <q-card-section horizontal>
+              <q-badge
+                v-if="blog.offline"
+                class="absolute-top-right"
+                color="red"
+                >Stored offline</q-badge
+              >
               <q-card-section class="q-pt-xs">
                 <div class="text-overline">{{ blog.created_at }}</div>
                 <div class="text-h5 q-mt-sm q-mb-xs text-title">
@@ -98,19 +105,77 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { getBlogs, deleteBlog } from "src/services/ApiService";
+import { openDB } from "idb";
 const tab = ref("For you");
 const blogList = ref([]);
 const isLoading = ref(false);
 
-onMounted(async () => {
+onActivated(async () => {
   isLoading.value = true;
-  blogList.value = await getBlogs();
+  if (!navigator.onLine) {
+    getOfflineBlogs();
+  } else {
+    blogList.value = await getBlogs();
+  }
   isLoading.value = false;
+});
+onMounted(async () => {
+  listenForOfflinePostUploaded();
 });
 
 const deleteBlogByID = async (id) => {
   await deleteBlog(id);
   blogList.value = await getBlogs();
+};
+
+const getOfflineBlogs = () => {
+  let db = openDB("workbox-background-sync").then((db) => {
+    db.getAll("requests")
+      .then((failedRequestes) => {
+        failedRequestes.forEach((failedRequest) => {
+          if (failedRequest.queueName == "createBlogQueue") {
+            let request = new Request(
+              failedRequest.requestData.url,
+              failedRequest.requestData
+            );
+            request.formData().then((formData) => {
+              let offlineBlog = {};
+              offlineBlog.id = formData.get("id");
+              offlineBlog.title = formData.get("title");
+              offlineBlog.content = formData.get("content");
+              offlineBlog.liked = formData.get("liked");
+              offlineBlog.thumps_up = formData.get("thumps_up");
+              offlineBlog.created_at = formData.get("created_at");
+              offlineBlog.updated_at = formData.get("updated_at");
+              offlineBlog.offline = true;
+
+              let reader = new FileReader();
+              reader.readAsDataURL(formData.get("file"));
+              reader.onloadend = () => {
+                blogList.value.unshift(offlineBlog);
+              };
+            });
+          }
+        });
+      })
+      .catch((err) => {});
+  });
+};
+
+const listenForOfflinePostUploaded = () => {
+  if ("serviceWorker" in navigator) {
+    const channel = new BroadcastChannel("sw-messages");
+    channel.addEventListener("message", (event) => {
+      console.log("Received", event.data);
+      if (event.data.msg === "offline-post-uploaded") {
+        const offlineBlogs = blogList.value.filter((blog) => blog.offline);
+        if (offlineBlogs.length > 0) {
+          const lastOfflineBlog = offlineBlogs[offlineBlogs.length - 1];
+          lastOfflineBlog.offline = false;
+        }
+      }
+    });
+  }
 };
 </script>
 <style scoped>
