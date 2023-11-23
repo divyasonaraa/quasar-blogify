@@ -160,9 +160,12 @@ const deleteBlogByID = async (id) => {
 };
 
 const getOfflineBlogs = async () => {
+  console.log("calledgetOfflineBlogs");
   let db = await openDB("workbox-background-sync");
+  console.log("database", db);
   try {
     const failedRequests = await db.getAll("requests");
+    console.log("failedRequests", failedRequests);
     for (const failedRequest of failedRequests) {
       if (failedRequest.queueName == "createBlogQueue") {
         const request = new Request(
@@ -208,6 +211,7 @@ const getOfflineBlogs = async () => {
 };
 
 const listenForOfflinePostUploaded = () => {
+  console.log("called listenForOfflinePostUploaded");
   if ("serviceWorker" in navigator) {
     const channel = new BroadcastChannel("sw-messages");
     channel.addEventListener("message", (event) => {
