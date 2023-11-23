@@ -156,27 +156,29 @@ const getOfflineBlogs = async () => {
 
         const file = formData.get("file");
 
-        const blob = new Blob([file], { type: file.type });
+        if (file) {
+          const blob = new Blob([file], { type: file.type });
 
-        const offlineBlog = {
-          id: formData.get("id"),
-          title: formData.get("title"),
-          content: formData.get("content"),
-          liked: formData.get("liked"),
-          thumps_up: formData.get("thumps_up"),
-          created_at: formData.get("created_at"),
-          updated_at: formData.get("updated_at"),
-          offline: true,
-        };
-
-        const reader = new FileReader();
-        reader.readAsDataURL(blob);
-        await new Promise((resolve) => {
-          reader.onloadend = () => {
-            blogList.value.unshift(offlineBlog);
-            resolve();
+          const offlineBlog = {
+            id: formData.get("id"),
+            title: formData.get("title"),
+            content: formData.get("content"),
+            liked: formData.get("liked"),
+            thumps_up: formData.get("thumps_up"),
+            created_at: formData.get("created_at"),
+            updated_at: formData.get("updated_at"),
+            offline: true,
           };
-        });
+
+          const reader = new FileReader();
+          reader.readAsDataURL(blob);
+          await new Promise((resolve) => {
+            reader.onloadend = () => {
+              blogList.value.unshift(offlineBlog);
+              resolve();
+            };
+          });
+        }
       }
     }
   } catch (error) {
