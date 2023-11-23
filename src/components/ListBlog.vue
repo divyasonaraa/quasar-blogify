@@ -184,14 +184,8 @@ const getOfflineBlogs = async () => {
             updated_at: formData.get("updated_at"),
             offline: true,
           };
-
-          console.log("offlineBlog", offlineBlog);
-          let reader = new FileReader();
-          reader.readAsDataURL(formData.get("file"));
-          reader.onloadend = () => {
-            // offlinePost.imageUrl = reader.result;
-            blogList.value.unshift(offlineBlog);
-          };
+          blogList.value.unshift(offlineBlog);
+          console.log("BlogList", blogList.value);
         });
 
         // if (file) {
