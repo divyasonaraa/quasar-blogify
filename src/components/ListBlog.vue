@@ -141,38 +141,45 @@ const deleteBlogByID = async (id) => {
   blogList.value = await getBlogs();
 };
 
-const getOfflineBlogs = () => {
-  let db = openDB("workbox-background-sync").then((db) => {
-    db.getAll("requests")
-      .then((failedRequestes) => {
-        failedRequestes.forEach((failedRequest) => {
-          if (failedRequest.queueName == "createBlogQueue") {
-            let request = new Request(
-              failedRequest.requestData.url,
-              failedRequest.requestData
-            );
-            request.formData().then((formData) => {
-              let offlineBlog = {};
-              offlineBlog.id = formData.get("id");
-              offlineBlog.title = formData.get("title");
-              offlineBlog.content = formData.get("content");
-              offlineBlog.liked = formData.get("liked");
-              offlineBlog.thumps_up = formData.get("thumps_up");
-              offlineBlog.created_at = formData.get("created_at");
-              offlineBlog.updated_at = formData.get("updated_at");
-              offlineBlog.offline = true;
+const getOfflineBlogs = async () => {
+  let db = await openDB("workbox-background-sync");
+  try {
+    const failedRequests = await db.getAll("requests");
+    for (const failedRequest of failedRequests) {
+      if (failedRequest.queueName == "createBlogQueue") {
+        const request = new Request(
+          failedRequest.requestData.url,
+          failedRequest.requestData
+        );
+        const formData = await request.formData();
 
-              let reader = new FileReader();
-              reader.readAsDataURL(formData.get("file"));
-              reader.onloadend = () => {
-                blogList.value.unshift(offlineBlog);
-              };
-            });
-          }
+        const offlineBlog = {
+          id: formData.get("id"),
+          title: formData.get("title"),
+          content: formData.get("content"),
+          liked: formData.get("liked"),
+          thumps_up: formData.get("thumps_up"),
+          created_at: formData.get("created_at"),
+          updated_at: formData.get("updated_at"),
+          offline: true,
+        };
+
+        const reader = new FileReader();
+        reader.readAsDataURL(formData.get("file"));
+        await new Promise((resolve) => {
+          reader.onloadend = () => {
+            blogList.value.unshift(offlineBlog);
+            resolve();
+          };
         });
-      })
-      .catch((err) => {});
-  });
+      }
+    }
+  } catch (error) {
+    $q.notify({
+      title: "Error fetching offline blogs:",
+      message: error,
+    });
+  }
 };
 
 const listenForOfflinePostUploaded = () => {
