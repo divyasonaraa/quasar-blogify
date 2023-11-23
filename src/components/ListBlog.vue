@@ -173,6 +173,7 @@ const getOfflineBlogs = async () => {
           failedRequest.requestData
         );
         request.formData().then((formData) => {
+          console.log("FormData...", formData);
           const offlineBlog = {
             id: formData.get("id"),
             title: formData.get("title"),
@@ -183,6 +184,8 @@ const getOfflineBlogs = async () => {
             updated_at: formData.get("updated_at"),
             offline: true,
           };
+
+          console.log("offlineBlog", offlineBlog);
           let reader = new FileReader();
           reader.readAsDataURL(formData.get("file"));
           reader.onloadend = () => {
