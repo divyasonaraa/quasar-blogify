@@ -154,6 +154,10 @@ const getOfflineBlogs = async () => {
         );
         const formData = await request.formData();
 
+        const file = formData.get("file");
+
+        const blob = new Blob([file], { type: file.type });
+
         const offlineBlog = {
           id: formData.get("id"),
           title: formData.get("title"),
@@ -166,7 +170,7 @@ const getOfflineBlogs = async () => {
         };
 
         const reader = new FileReader();
-        reader.readAsDataURL(formData.get("file"));
+        reader.readAsDataURL(blob);
         await new Promise((resolve) => {
           reader.onloadend = () => {
             blogList.value.unshift(offlineBlog);
