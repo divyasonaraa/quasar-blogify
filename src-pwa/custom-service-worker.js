@@ -29,7 +29,6 @@ cleanupOutdatedCaches();
 
 let backgroundSync = "sync" in self.registration ? true : false;
 
-console.log("backgroundSync", backgroundSync);
 /*
    queue- create post
  */
@@ -107,14 +106,36 @@ if (backgroundSync) {
     if (event.request.method == "POST") {
       // Clone the request to ensure it's safe to read when
       // adding to the Queue.
-      const promiseChain = fetch(event.request.clone()).catch((err) => {
-        return createBlogQueue.pushRequest({ request: event.request });
-      });
+      if (!self.navigator.onLine) {
+        const promiseChain = fetch(event.request.clone()).catch((err) => {
+          return createBlogQueue.pushRequest({ request: event.request });
+        });
 
-      event.waitUntil(promiseChain);
+        event.waitUntil(promiseChain);
+      }
     }
   });
 }
+/*
+  events - push
+*/
+
+self.addEventListener("push", (event) => {
+  console.log("Push message received:", event);
+  if (event.data) {
+    let data = JSON.parse(event.data.text());
+    event.waitUntil(
+      self.registration.showNotification(data.title, {
+        body: data.body,
+        icon: "icons/icon-128x128.png",
+        badge: "icons/icon-128x128.png",
+        data: {
+          openUrl: data.openUrl,
+        },
+      })
+    );
+  }
+});
 
 /*
   events - notifications

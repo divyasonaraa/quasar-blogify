@@ -16,6 +16,7 @@ let path = require("path");
 let os = require("os");
 let fs = require("fs");
 let UUID = require("uuid-v4");
+let webpush = require("web-push");
 
 /* config - express*/
 const app = express();
@@ -31,6 +32,16 @@ initializeApp({
 });
 
 const db = getFirestore();
+
+/*
+  config - webpush
+*/
+
+webpush.setVapidDetails(
+  "mailto:divya.sonara@simformsolutions.com",
+  "BBSquFX8ox1F3YU6eEvDNsszQKr1ShOKNk27HrjzhNezmJxgk8kWLPvuBKLQogEnRVAp_pm97JhwLl0nwdjh-Bw", // public key
+  "eN1G9mLPirxVHV3gA3usMX8xZr9Au1Qbr7VXfbNruJw" // private key
+);
 
 /* endpoints*/
 app.get("/blogs", (request, response) => {
@@ -107,9 +118,40 @@ app.post("/blog", (request, response) => {
         updated_at: parseInt(fields.created_at),
       })
       .then(() => {
+        sendPushNotification();
         response.send("blog added: " + fields.id);
       });
+    function sendPushNotification() {
+      let subscriptions = [];
+      db.collection("subscriptions")
+        .get()
+        .then((snapshot) => {
+          snapshot.forEach((doc) => {
+            subscriptions.push(doc.data());
+          });
+          return subscriptions;
+        })
+        .then((subscriptions) => {
+          subscriptions.forEach((subscription) => {
+            const pushSubscription = {
+              endpoint: subscription.endpoint,
+              keys: {
+                auth: subscription.keys.auth,
+                p256dh: subscription.keys.p256dh,
+              },
+            };
+            let pushContent = {
+              title: "New Blog Created!",
+              body: "New Blog Added! Check it out!",
+              openUrl: "/#/",
+            };
+            let pushContentStringified = JSON.stringify(pushContent);
+            webpush.sendNotification(pushSubscription, pushContentStringified);
+          });
+        });
+    }
   });
+
   request.pipe(bb);
 });
 
