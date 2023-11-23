@@ -55,8 +55,20 @@
 
             <div class="row">
               <q-card-actions class="action">
-                <q-btn flat round icon="thumb_up" color="grey-7"></q-btn>
-                <q-btn flat round icon="favorite" color="grey-7"> </q-btn>
+                <q-btn
+                  flat
+                  round
+                  icon="thumb_up"
+                  :color="blog.liked ? 'grey-7' : 'green'"
+                  @click="toggleLike(blog.id)"
+                ></q-btn>
+                <q-btn
+                  flat
+                  round
+                  icon="favorite"
+                  :color="blog.favorite ? 'grey-7' : 'red'"
+                  @click="toggleFavorite(blog.id)"
+                ></q-btn>
               </q-card-actions>
               <q-card-actions class="action">
                 <router-link :to="'/edit/' + blog.id"
@@ -104,7 +116,12 @@
 </template>
 <script setup>
 import { ref, onMounted } from "vue";
-import { getBlogs, deleteBlog } from "src/services/ApiService";
+import {
+  getBlogs,
+  deleteBlog,
+  addToFavoriteBlog,
+  likeBlog,
+} from "src/services/ApiService";
 import { openDB } from "idb";
 import { useQuasar, date } from "quasar";
 
@@ -202,6 +219,34 @@ const listenForOfflinePostUploaded = () => {
           lastOfflineBlog.offline = false;
         }
       }
+    });
+  }
+};
+
+const toggleLike = async (blogId) => {
+  try {
+    await likeBlog(blogId);
+    const blogIndex = blogList.value.findIndex((blog) => blog.id === blogId);
+    blogList.value[blogIndex].liked = !blogList.value[blogIndex].liked;
+  } catch (error) {
+    $q.notify({
+      message: "Error toggling like status:" + error,
+      type: "negative",
+      timeout: 2000,
+    });
+  }
+};
+
+const toggleFavorite = async (blogId) => {
+  try {
+    await addToFavoriteBlog(blogId);
+    const blogIndex = blogList.value.findIndex((blog) => blog.id === blogId);
+    blogList.value[blogIndex].favorite = !blogList.value[blogIndex].favorite;
+  } catch (error) {
+    $q.notify({
+      message: "Error toggling favorite status:" + error,
+      type: "negative",
+      timeout: 2000,
     });
   }
 };

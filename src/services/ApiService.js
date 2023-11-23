@@ -31,7 +31,7 @@ export const getBlog = async (id) => {
     return response.data;
   } catch (error) {
     showErrorNotification("Error fetching blog");
-    throw new Error("Error fetching blog"); 
+    throw new Error("Error fetching blog");
   }
 };
 
@@ -61,5 +61,24 @@ export const deleteBlog = async (id) => {
     console.error(error);
     showErrorNotification("Error deleting blog");
     throw new Error("Error deleting blog");
+  }
+};
+
+export const likeBlog = async (id) => {
+  try {
+    await instance.post(`/blog/${id}/toggle-like`);
+  } catch (error) {
+    showErrorNotification("Error like blog");
+    throw new Error("Error like blog");
+  }
+};
+
+export const addToFavoriteBlog = async (id) => {
+  try {
+    await instance.post(`/blog/${id}/toggle-favorite`);
+  } catch (error) {
+    console.error(error);
+    showErrorNotification("Error favorite blog");
+    throw new Error("Error favorite blog");
   }
 };
