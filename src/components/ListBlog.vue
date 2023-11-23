@@ -59,14 +59,14 @@
                   flat
                   round
                   icon="thumb_up"
-                  :color="blog.liked ? 'grey-7' : 'green'"
+                  :color="blog.thumps_up ? 'grey-7' : 'green'"
                   @click="toggleLike(blog.id)"
                 ></q-btn>
                 <q-btn
                   flat
                   round
                   icon="favorite"
-                  :color="blog.favorite ? 'grey-7' : 'red'"
+                  :color="blog.liked ? 'grey-7' : 'red'"
                   @click="toggleFavorite(blog.id)"
                 ></q-btn>
               </q-card-actions>
@@ -168,17 +168,11 @@ const getOfflineBlogs = async () => {
     console.log("failedRequests", failedRequests);
     for (const failedRequest of failedRequests) {
       if (failedRequest.queueName == "createBlogQueue") {
-        const request = new Request(
+        let request = new Request(
           failedRequest.requestData.url,
           failedRequest.requestData
         );
-        const formData = await request.formData();
-
-        const file = formData.get("file");
-
-        if (file) {
-          const blob = new Blob([file], { type: file.type });
-
+        request.formData().then((formData) => {
           const offlineBlog = {
             id: formData.get("id"),
             title: formData.get("title"),
@@ -189,16 +183,37 @@ const getOfflineBlogs = async () => {
             updated_at: formData.get("updated_at"),
             offline: true,
           };
+          let reader = new FileReader();
+          reader.readAsDataURL(formData.get("file"));
+          reader.onloadend = () => {
+            // offlinePost.imageUrl = reader.result;
+            blogList.value.unshift(offlineBlog);
+          };
+        });
 
-          const reader = new FileReader();
-          reader.readAsDataURL(blob);
-          await new Promise((resolve) => {
-            reader.onloadend = () => {
-              blogList.value.unshift(offlineBlog);
-              resolve();
-            };
-          });
-        }
+        // if (file) {
+        //   const blob = new Blob([file], { type: file.type });
+
+        //   const offlineBlog = {
+        //     id: formData.get("id"),
+        //     title: formData.get("title"),
+        //     content: formData.get("content"),
+        //     liked: formData.get("liked"),
+        //     thumps_up: formData.get("thumps_up"),
+        //     created_at: formData.get("created_at"),
+        //     updated_at: formData.get("updated_at"),
+        //     offline: true,
+        //   };
+
+        //   const reader = new FileReader();
+        //   reader.readAsDataURL(blob);
+        //   await new Promise((resolve) => {
+        //     reader.onloadend = () => {
+        //       blogList.value.unshift(offlineBlog);
+        //       resolve();
+        //     };
+        //   });
+        // }
       }
     }
   } catch (error) {
