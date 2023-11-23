@@ -82,3 +82,15 @@ export const addToFavoriteBlog = async (id) => {
     throw new Error("Error favorite blog");
   }
 };
+
+export const createSubscription = (newSubDataQS) => {
+  console.log("Called newSub", newSubDataQS);
+  try {
+    const response = instance.post(`/createSubscription?${newSubDataQS}`);
+    return response;
+  } catch (error) {
+    console.error(error);
+    showErrorNotification("Error favorite blog");
+    throw new Error("Error favorite blog");
+  }
+};

@@ -276,5 +276,21 @@ app.post("/blog/:id/toggle-favorite", (request, response) => {
     });
 });
 
+/*
+  endpoint - createSubscription
+*/
+
+app.post("/createSubscription", (request, response) => {
+  response.set("Access-Control-Allow-Origin", "*");
+  db.collection("subscriptions")
+    .add(request.query)
+    .then((docRef) => {
+      response.send({
+        message: "Subscription added!",
+        postData: request.query,
+      });
+    });
+});
+
 /* listen */
 app.listen(3000);

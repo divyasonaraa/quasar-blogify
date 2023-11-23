@@ -115,3 +115,29 @@ if (backgroundSync) {
     }
   });
 }
+
+/*
+  events - notifications
+*/
+
+self.addEventListener("notificationclick", (event) => {
+  let notification = event.notification;
+  event.waitUntil(
+    clients.matchAll().then((clis) => {
+      let clientUsingApp = clis.find((cli) => {
+        return cli.visibilityState === "visible";
+      });
+      if (clientUsingApp) {
+        clientUsingApp.navigate(notification.data.openUrl);
+        clientUsingApp.focus();
+      } else {
+        clients.openWindow(notification.data.openUrl);
+      }
+    })
+  );
+  notification.close();
+});
+
+self.addEventListener("notificationclose", (event) => {
+  console.log("Notification was closed", event);
+});
