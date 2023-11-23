@@ -58,6 +58,7 @@ import BlogList from "src/components/ListBlog.vue";
 import MainContainer from "src/components/MainContainer.vue";
 import { useQuasar } from "quasar";
 import { createSubscription } from "../services/ApiService";
+import qs from "qs";
 
 //variables
 const showNotificationsBanner = ref(false);
