@@ -102,7 +102,7 @@ registerRoute(
   events - fetch
 */
 
-if (backgroundSyncSupported) {
+if (backgroundSync) {
   self.addEventListener("fetch", (event) => {
     if (event.request.method == "POST") {
       // Clone the request to ensure it's safe to read when
