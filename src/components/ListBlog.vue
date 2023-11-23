@@ -130,8 +130,9 @@ const getBlogList = async () => {
     }
   } catch (error) {
     $q.notify({
-      title: "Error",
-      message: "Could not download blogs.",
+      message: "Could not download blogs." + error,
+      type: "negative",
+      timeout: 2000,
     });
     isLoading.value = false;
   }
@@ -176,8 +177,9 @@ const getOfflineBlogs = async () => {
     }
   } catch (error) {
     $q.notify({
-      title: "Error fetching offline blogs:",
-      message: error,
+      message: "Error fetching offline blogs" + error,
+      type: "negative",
+      timeout: 2000,
     });
   }
 };
