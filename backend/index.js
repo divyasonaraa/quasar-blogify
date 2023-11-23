@@ -164,5 +164,117 @@ app.get("/", (request, response) => {
   response.send("welcome to Blogify!");
 });
 
+// Endpoint to get liked blogs
+app.get("/blogs/liked", (request, response) => {
+  db.collection("blogs")
+    .where("liked", "==", true)
+    .get()
+    .then((snapshot) => {
+      const likedBlogs = [];
+      snapshot.forEach((doc) => {
+        likedBlogs.push(doc.data());
+      });
+      response.send(likedBlogs);
+    })
+    .catch((error) => {
+      console.error("Error fetching liked blogs:", error);
+      response.status(500).send("Internal Server Error");
+    });
+});
+
+// Endpoint to get favorite blogs
+app.get("/blogs/favorites", (request, response) => {
+  db.collection("blogs")
+    .where("favorite", "==", true)
+    .get()
+    .then((snapshot) => {
+      const favoriteBlogs = [];
+      snapshot.forEach((doc) => {
+        favoriteBlogs.push(doc.data());
+      });
+      response.send(favoriteBlogs);
+    })
+    .catch((error) => {
+      console.error("Error fetching favorite blogs:", error);
+      response.status(500).send("Internal Server Error");
+    });
+});
+
+// Endpoint to toggle like status
+app.post("/blog/:id/toggle-like", (request, response) => {
+  const { id } = request.params;
+
+  // Get the current like status
+  db.collection("blogs")
+    .doc(id)
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        response.status(404).send("Blog not found");
+        return;
+      }
+
+      const currentLikeStatus = doc.data().liked || false;
+
+      // Toggle the like status
+      db.collection("blogs")
+        .doc(id)
+        .update({
+          liked: !currentLikeStatus,
+        })
+        .then(() => {
+          const message = !currentLikeStatus ? "Blog liked" : "Blog unliked";
+          response.send(message + ": " + id);
+        })
+        .catch((error) => {
+          console.error("Error toggling like status:", error);
+          response.status(500).send("Internal Server Error");
+        });
+    })
+    .catch((error) => {
+      console.error("Error fetching blog:", error);
+      response.status(500).send("Internal Server Error");
+    });
+});
+
+// Endpoint to toggle favorite status
+app.post("/blog/:id/toggle-favorite", (request, response) => {
+  const { id } = request.params;
+
+  // Get the current favorite status
+  db.collection("blogs")
+    .doc(id)
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        response.status(404).send("Blog not found");
+        return;
+      }
+
+      const currentFavoriteStatus = doc.data().favorite || false;
+
+      // Toggle the favorite status
+      db.collection("blogs")
+        .doc(id)
+        .update({
+          favorite: !currentFavoriteStatus,
+        })
+        .then(() => {
+          const message = !currentFavoriteStatus
+            ? "Blog marked as favorite"
+            : "Blog removed from favorites";
+          response.send(message + ": " + id);
+        })
+        .catch((error) => {
+          console.error("Error toggling favorite status:", error);
+          response.status(500).send("Internal Server Error");
+        });
+    })
+    .catch((error) => {
+      console.error("Error fetching blog:", error);
+      response.status(500).send("Internal Server Error");
+    });
+});
+
 /* listen */
 app.listen(3000);

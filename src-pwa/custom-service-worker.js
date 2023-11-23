@@ -29,6 +29,7 @@ cleanupOutdatedCaches();
 
 let backgroundSync = "sync" in self.registration ? true : false;
 
+console.log("backgroundSync", backgroundSync);
 /*
    queue- create post
  */
@@ -36,6 +37,7 @@ let createBlogQueue = null;
 if (backgroundSync) {
   createBlogQueue = new Queue("createBlogQueue", {
     onSync: async ({ queue }) => {
+      console.log("queue", queue);
       let entry;
       while ((entry = await queue.shiftRequest())) {
         try {
@@ -97,26 +99,19 @@ registerRoute(
 );
 
 /*
-    Events - fetch
+  events - fetch
 */
-if (backgroundSync) {
+
+if (backgroundSyncSupported) {
   self.addEventListener("fetch", (event) => {
-    // Add in your own criteria here to return early if this
-    // isn't a request that should use background sync.
-    if (event.request.method !== "POST") {
-      return;
+    if (event.request.method == "POST") {
+      // Clone the request to ensure it's safe to read when
+      // adding to the Queue.
+      const promiseChain = fetch(event.request.clone()).catch((err) => {
+        return createBlogQueue.pushRequest({ request: event.request });
+      });
+
+      event.waitUntil(promiseChain);
     }
-
-    const bgSyncLogic = async () => {
-      try {
-        const response = await fetch(event.request.clone());
-        return response;
-      } catch (error) {
-        await createBlogQueue.pushRequest({ request: event.request });
-        return error;
-      }
-    };
-
-    event.respondWith(bgSyncLogic());
   });
 }
