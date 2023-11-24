@@ -39,23 +39,20 @@ const privateKey = "eN1G9mLPirxVHV3gA3usMX8xZr9Au1Qbr7VXfbNruJw";
 /*
   config - webpush
 */
-const urlBase64ToUint8Array = (base64String) => {
-  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
 
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
+// Convert URL-safe Base64 to regular Base64
+const publicKeyRegularBase64 = publicKey.replace(/-/g, "+").replace(/_/g, "/");
+const privateKeyRegularBase64 = privateKey
+  .replace(/-/g, "+")
+  .replace(/_/g, "/");
 
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-  return outputArray;
-};
+// // Decode the regular Base64 string
+// const decodedData = Buffer.from(regularBase64, "base64").toString("utf-8");
 
 webpush.setVapidDetails(
   "mailto:divya.sonara@simformsolutions.com",
-  urlBase64ToUint8Array(publicKey),
-  urlBase64ToUint8Array(privateKey)
+  publicKeyRegularBase64,
+  privateKeyRegularBase64
 );
 
 /* endpoints*/
