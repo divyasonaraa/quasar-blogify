@@ -36,18 +36,14 @@ const publicKey =
   "BBSquFX8ox1F3YU6eEvDNsszQKr1ShOKNk27HrjzhNezmJxgk8kWLPvuBKLQogEnRVAp_pm97JhwLl0nwdjh-Bw";
 const privateKey = "eN1G9mLPirxVHV3gA3usMX8xZr9Au1Qbr7VXfbNruJw";
 
-// Encode keys using Node.js Buffer API
-const encodedPublicKey = Buffer.from(publicKey).toString("base64");
-const encodedPrivateKey = Buffer.from(privateKey).toString("base64");
-
 /*
   config - webpush
 */
 
 webpush.setVapidDetails(
   "mailto:divya.sonara@simformsolutions.com",
-  encodedPublicKey, // public key
-  encodedPrivateKey // private key
+  publicKey, // public key
+  privateKey // private key
 );
 
 /* endpoints*/
