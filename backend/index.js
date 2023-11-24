@@ -17,6 +17,7 @@ let os = require("os");
 let fs = require("fs");
 let UUID = require("uuid-v4");
 let webpush = require("web-push");
+const base64url = require("base64url");
 
 /* config - express*/
 const app = express();
@@ -39,8 +40,10 @@ const db = getFirestore();
 
 webpush.setVapidDetails(
   "mailto:divya.sonara@simformsolutions.com",
-  "BBSquFX8ox1F3YU6eEvDNsszQKr1ShOKNk27HrjzhNezmJxgk8kWLPvuBKLQogEnRVAp_pm97JhwLl0nwdjh-Bw", // public key
-  "eN1G9mLPirxVHV3gA3usMX8xZr9Au1Qbr7VXfbNruJw" // private key
+  base64url(
+    "BBSquFX8ox1F3YU6eEvDNsszQKr1ShOKNk27HrjzhNezmJxgk8kWLPvuBKLQogEnRVAp_pm97JhwLl0nwdjh-Bw"
+  ), // public key
+  base64url("eN1G9mLPirxVHV3gA3usMX8xZr9Au1Qbr7VXfbNruJw") // private key
 );
 
 /* endpoints*/
