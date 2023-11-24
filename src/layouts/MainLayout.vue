@@ -138,11 +138,7 @@ import { useQuasar } from "quasar";
 const router = useRouter();
 const showInsatllbanner = ref(false);
 const leftDrawerOpen = ref(false);
-const links = [
-  { icon: "person", text: "For you" },
-  { icon: "star_border", text: "Favourites" },
-  { icon: "thumb_up", text: "Liked" },
-];
+const links = [{ icon: "person", text: "For you" }];
 const $q = useQuasar();
 let deferredPrompt;
 

@@ -59,14 +59,14 @@
                   flat
                   round
                   icon="thumb_up"
-                  :color="blog.thumps_up ? 'grey-7' : 'green'"
+                  :color="blog.liked ? 'grey-7' : 'green'"
                   @click="toggleLike(blog.id)"
                 ></q-btn>
                 <q-btn
                   flat
                   round
                   icon="favorite"
-                  :color="blog.liked ? 'grey-7' : 'red'"
+                  :color="blog.favorite ? 'grey-7' : 'red'"
                   @click="toggleFavorite(blog.id)"
                 ></q-btn>
               </q-card-actions>
@@ -160,12 +160,9 @@ const deleteBlogByID = async (id) => {
 };
 
 const getOfflineBlogs = async () => {
-  console.log("calledgetOfflineBlogs");
   let db = await openDB("workbox-background-sync");
-  console.log("database", db);
   try {
     const failedRequests = await db.getAll("requests");
-    console.log("failedRequests", failedRequests);
     for (const failedRequest of failedRequests) {
       if (failedRequest.queueName == "createBlogQueue") {
         let request = new Request(
@@ -173,44 +170,18 @@ const getOfflineBlogs = async () => {
           failedRequest.requestData
         );
         request.formData().then((formData) => {
-          console.log("FormData...", formData);
           const offlineBlog = {
             id: formData.get("id"),
             title: formData.get("title"),
             content: formData.get("content"),
             liked: formData.get("liked"),
-            thumps_up: formData.get("thumps_up"),
+            favorite: formData.get("favorite"),
             created_at: formData.get("created_at"),
             updated_at: formData.get("updated_at"),
             offline: true,
           };
           blogList.value.unshift(offlineBlog);
-          console.log("BlogList", blogList.value);
         });
-
-        // if (file) {
-        //   const blob = new Blob([file], { type: file.type });
-
-        //   const offlineBlog = {
-        //     id: formData.get("id"),
-        //     title: formData.get("title"),
-        //     content: formData.get("content"),
-        //     liked: formData.get("liked"),
-        //     thumps_up: formData.get("thumps_up"),
-        //     created_at: formData.get("created_at"),
-        //     updated_at: formData.get("updated_at"),
-        //     offline: true,
-        //   };
-
-        //   const reader = new FileReader();
-        //   reader.readAsDataURL(blob);
-        //   await new Promise((resolve) => {
-        //     reader.onloadend = () => {
-        //       blogList.value.unshift(offlineBlog);
-        //       resolve();
-        //     };
-        //   });
-        // }
       }
     }
   } catch (error) {
@@ -223,11 +194,9 @@ const getOfflineBlogs = async () => {
 };
 
 const listenForOfflinePostUploaded = () => {
-  console.log("called listenForOfflinePostUploaded");
   if ("serviceWorker" in navigator) {
     const channel = new BroadcastChannel("sw-messages");
     channel.addEventListener("message", (event) => {
-      console.log("Received", event.data);
       if (event.data.msg === "offline-post-uploaded") {
         const offlineBlogs = blogList.value.filter((blog) => blog.offline);
         if (offlineBlogs.length > 0) {
