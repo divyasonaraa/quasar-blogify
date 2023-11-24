@@ -146,7 +146,14 @@ app.post("/blog", (request, response) => {
               openUrl: "/#/",
             };
             let pushContentStringified = JSON.stringify(pushContent);
-            webpush.sendNotification(pushSubscription, pushContentStringified);
+            try {
+              webpush.sendNotification(
+                pushSubscription,
+                pushContentStringified
+              );
+            } catch (error) {
+              console.error("Error sending push notification:", error);
+            }
           });
         });
     }
