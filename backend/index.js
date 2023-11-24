@@ -154,6 +154,7 @@ app.post("/blog", (request, response) => {
                 pushSubscription,
                 pushContentStringified
               );
+              console.log("Notification Send");
             } catch (error) {
               console.error("Error sending push notification:", error);
             }
