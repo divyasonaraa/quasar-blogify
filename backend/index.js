@@ -33,8 +33,8 @@ initializeApp({
 
 const db = getFirestore();
 const publicKey =
-  "BBSquFX8ox1F3YU6eEvDNsszQKr1ShOKNk27HrjzhNezmJxgk8kWLPvuBKLQogEnRVAp_pm97JhwLl0nwdjh-Bw";
-const privateKey = "eN1G9mLPirxVHV3gA3usMX8xZr9Au1Qbr7VXfbNruJw";
+  "BD8DlhHwtd972rgpTjMPotAUlZ-AWi8wxA3R4UUen0wmsqDHsyep-fGzbXjnbgb7sS4PAmdjgvyLLCFPiKTlI5w";
+const privateKey = "dJI8iz_bv-fVO7xNW1mzAPBCvQTgvpekv52bXV1TJvE";
 
 /*
   config - webpush
