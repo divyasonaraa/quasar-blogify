@@ -93,18 +93,14 @@ const enableNotifications = () => {
 };
 const checkForExistingPushSubscription = () => {
   if (serviceWorkerSupported.value && pushNotificationsSupported.value) {
-    console.log("navigator.serviceWorker.ready", navigator.serviceWorker.ready);
     let reg;
     navigator.serviceWorker.ready
       .then((swreg) => {
-        console.log("inside the swreg", swreg);
         reg = swreg;
         return swreg.pushManager.getSubscription();
       })
       .then((sub) => {
-        console.log("out sub");
         if (!sub) {
-          console.log("!sub");
           createPushSubscription(reg);
         }
       });
@@ -112,7 +108,7 @@ const checkForExistingPushSubscription = () => {
 };
 const createPushSubscription = (reg) => {
   let vapidPublicKey =
-    "BBSquFX8ox1F3YU6eEvDNsszQKr1ShOKNk27HrjzhNezmJxgk8kWLPvuBKLQogEnRVAp_pm97JhwLl0nwdjh-Bw";
+    "BD8DlhHwtd972rgpTjMPotAUlZ-AWi8wxA3R4UUen0wmsqDHsyep-fGzbXjnbgb7sS4PAmdjgvyLLCFPiKTlI5w";
   let vapidPublicKeyConverted = urlBase64ToUint8Array(vapidPublicKey);
   reg.pushManager
     .subscribe({
