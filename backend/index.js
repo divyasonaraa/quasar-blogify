@@ -36,14 +36,17 @@ const publicKey =
   "BBSquFX8ox1F3YU6eEvDNsszQKr1ShOKNk27HrjzhNezmJxgk8kWLPvuBKLQogEnRVAp_pm97JhwLl0nwdjh-Bw";
 const privateKey = "eN1G9mLPirxVHV3gA3usMX8xZr9Au1Qbr7VXfbNruJw";
 
+// VAPID keys should be generated only once.
+const vapidKeys = webpush.generateVAPIDKeys();
+
 /*
   config - webpush
 */
 
 webpush.setVapidDetails(
   "mailto:divya.sonara@simformsolutions.com",
-  publicKey, // public key
-  privateKey // private key
+  vapidKeys.publicKey,
+  vapidKeys.privateKey
 );
 
 /* endpoints*/
