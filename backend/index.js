@@ -17,7 +17,6 @@ let os = require("os");
 let fs = require("fs");
 let UUID = require("uuid-v4");
 let webpush = require("web-push");
-const base64url = require("base64url");
 
 /* config - express*/
 const app = express();
@@ -33,6 +32,13 @@ initializeApp({
 });
 
 const db = getFirestore();
+const publicKey =
+  "BBSquFX8ox1F3YU6eEvDNsszQKr1ShOKNk27HrjzhNezmJxgk8kWLPvuBKLQogEnRVAp_pm97JhwLl0nwdjh-Bw";
+const privateKey = "eN1G9mLPirxVHV3gA3usMX8xZr9Au1Qbr7VXfbNruJw";
+
+// Encode keys using Node.js Buffer API
+const encodedPublicKey = Buffer.from(publicKey).toString("base64");
+const encodedPrivateKey = Buffer.from(privateKey).toString("base64");
 
 /*
   config - webpush
@@ -40,10 +46,8 @@ const db = getFirestore();
 
 webpush.setVapidDetails(
   "mailto:divya.sonara@simformsolutions.com",
-  base64url(
-    "BBSquFX8ox1F3YU6eEvDNsszQKr1ShOKNk27HrjzhNezmJxgk8kWLPvuBKLQogEnRVAp_pm97JhwLl0nwdjh-Bw"
-  ), // public key
-  base64url("eN1G9mLPirxVHV3gA3usMX8xZr9Au1Qbr7VXfbNruJw") // private key
+  encodedPublicKey, // public key
+  encodedPrivateKey // private key
 );
 
 /* endpoints*/
