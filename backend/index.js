@@ -36,17 +36,14 @@ const publicKey =
   "BBSquFX8ox1F3YU6eEvDNsszQKr1ShOKNk27HrjzhNezmJxgk8kWLPvuBKLQogEnRVAp_pm97JhwLl0nwdjh-Bw";
 const privateKey = "eN1G9mLPirxVHV3gA3usMX8xZr9Au1Qbr7VXfbNruJw";
 
-// VAPID keys should be generated only once.
-const vapidKeys = webpush.generateVAPIDKeys();
-
 /*
   config - webpush
 */
 
 webpush.setVapidDetails(
   "mailto:divya.sonara@simformsolutions.com",
-  urlBase64ToUint8Array(vapidKeys.publicKey),
-  urlBase64ToUint8Array(vapidKeys.privateKey)
+  urlBase64ToUint8Array(publicKey),
+  urlBase64ToUint8Array(privateKey)
 );
 
 /* endpoints*/
@@ -349,16 +346,3 @@ app.post("/createSubscription", (request, response) => {
 
 /* listen */
 app.listen(3000);
-
-const urlBase64ToUint8Array = (base64String) => {
-  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
-
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-  return outputArray;
-};
