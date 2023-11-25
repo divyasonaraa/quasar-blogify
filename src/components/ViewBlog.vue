@@ -16,11 +16,13 @@
 
           <q-card-section>
             <div class="text-h6">{{ blog.title }}</div>
-            <div class="text-subtitle2">{{ blog.created_at }}</div>
+            <div class="text-subtitle2 text-grey">
+              {{ niceDate(blog.created_at) }}
+            </div>
           </q-card-section>
 
           <q-card-section class="q-pt-none">
-            {{ blog.content }}
+            <div v-html="blog.content"></div>
           </q-card-section>
         </q-card>
       </q-col>
@@ -31,6 +33,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { getBlog } from "../services/ApiService";
+import { date } from "quasar";
 
 const blog = ref({});
 const props = defineProps(["blogID"]);
@@ -38,4 +41,7 @@ const props = defineProps(["blogID"]);
 onMounted(async () => {
   blog.value = await getBlog(props.blogID);
 });
+const niceDate = (value) => {
+  return date.formatDate(value, "MMMM D h:mmA");
+};
 </script>

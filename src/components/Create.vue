@@ -18,6 +18,15 @@
         :disable="!isEnabled"
         @click="editMode ? updateBlog() : createBlog(blogTitle, blogContent)"
       />
+      <q-btn
+        rounded
+        class="q-ml-md"
+        color="grey-7"
+        push
+        href="/"
+        icon="arrow_back"
+        label="Back"
+      />
     </div>
   </form>
 </template>
@@ -67,7 +76,7 @@ const createBlog = async (blogTitle, blogContent) => {
     formData.append("content", blogContent);
     formData.append("image_url", imageUrl); // Add image URL to form data
     formData.append("liked", false);
-    formData.append("thumps_up", false);
+    formData.append("favorite", false);
     formData.append("created_at", Date.now());
     formData.append("updated_at", Date.now());
 

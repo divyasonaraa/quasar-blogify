@@ -41,9 +41,10 @@
                 <div class="text-h5 q-mt-sm q-mb-xs text-title">
                   {{ blog.title }}
                 </div>
-                <div class="text-caption text-grey">
-                  {{ blog.content }}
-                </div>
+                <div
+                  v-html="blog.content"
+                  class="text-caption text-grey ellipsis-3-lines"
+                ></div>
               </q-card-section>
 
               <q-card-section class="col-5 flex flex-center">
@@ -70,9 +71,13 @@
                 ></q-btn>
               </q-card-actions>
               <q-card-actions class="action">
-                <router-link :to="'/edit/' + blog.id"
-                  ><q-btn flat round icon="edit" color="grey-7"></q-btn
-                ></router-link>
+                <q-btn
+                  flat
+                  round
+                  icon="edit"
+                  color="grey-7"
+                  @click.stop="editBlog(blog.id)"
+                ></q-btn>
                 <q-btn
                   flat
                   round
@@ -239,6 +244,9 @@ const toggleFavorite = async (blogId) => {
 
 const redirectToBlog = (id) => {
   router.push(`/view/${id}`);
+};
+const editBlog = (id) => {
+  router.push(`/edit/${id}`);
 };
 
 const niceDate = (value) => {
