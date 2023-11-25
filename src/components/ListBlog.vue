@@ -25,6 +25,7 @@
             bordered
             v-for="blog in blogList"
             :key="blog.key"
+            @click="redirectToBlog(blog.id)"
           >
             <q-card-section horizontal>
               <q-badge
@@ -34,7 +35,9 @@
                 >Stored offline</q-badge
               >
               <q-card-section class="q-pt-xs">
-                <div class="text-overline">{{ niceDate(blog.created_at) }}</div>
+                <div class="text-overline">
+                  {{ niceDate(blog.created_at) }}
+                </div>
                 <div class="text-h5 q-mt-sm q-mb-xs text-title">
                   {{ blog.title }}
                 </div>
@@ -44,13 +47,9 @@
               </q-card-section>
 
               <q-card-section class="col-5 flex flex-center">
-                <q-img
-                  class="rounded-borders"
-                  src="https://cdn.quasar.dev/img/parallax2.jpg"
-                ></q-img>
+                <q-img class="rounded-borders" :src="blog.image_url"></q-img>
               </q-card-section>
             </q-card-section>
-
             <q-separator></q-separator>
 
             <div class="row">
@@ -60,14 +59,14 @@
                   round
                   icon="thumb_up"
                   :color="blog.liked ? 'grey-7' : 'green'"
-                  @click="toggleLike(blog.id)"
+                  @click.stop="toggleLike(blog.id)"
                 ></q-btn>
                 <q-btn
                   flat
                   round
                   icon="favorite"
                   :color="blog.favorite ? 'grey-7' : 'red'"
-                  @click="toggleFavorite(blog.id)"
+                  @click.stop="toggleFavorite(blog.id)"
                 ></q-btn>
               </q-card-actions>
               <q-card-actions class="action">
@@ -78,7 +77,7 @@
                   flat
                   round
                   icon="delete"
-                  @click="deleteBlogByID(blog.id)"
+                  @click.stop="deleteBlogByID(blog.id)"
                   color="grey-7"
                 >
                 </q-btn>
@@ -124,11 +123,13 @@ import {
 } from "src/services/ApiService";
 import { openDB } from "idb";
 import { useQuasar, date } from "quasar";
+import { useRouter } from "vue-router";
 
 const tab = ref("For you");
 const blogList = ref([]);
 const isLoading = ref(false);
 const $q = useQuasar();
+const router = useRouter();
 
 onMounted(async () => {
   getBlogList();
@@ -234,6 +235,10 @@ const toggleFavorite = async (blogId) => {
       timeout: 2000,
     });
   }
+};
+
+const redirectToBlog = (id) => {
+  router.push(`/view/${id}`);
 };
 
 const niceDate = (value) => {

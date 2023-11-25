@@ -27,7 +27,7 @@ export const getBlogs = async () => {
 
 export const getBlog = async (id) => {
   try {
-    const response = await instance.get(`blog/${id}`);
+    const response = await instance.get(`/blog/${id}`);
     return response.data;
   } catch (error) {
     showErrorNotification("Error fetching blog");

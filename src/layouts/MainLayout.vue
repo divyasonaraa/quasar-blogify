@@ -26,7 +26,6 @@
           class="GNL__toolbar-input"
           outlined
           dense
-          v-model="search"
           color="bg-grey-7 shadow-1"
           placeholder="Search for blogs"
         >

@@ -51,10 +51,21 @@ const isEnabled = computed(() => {
 
 const createBlog = async (blogTitle, blogContent) => {
   try {
+    // Use the Unsplash API to get a random technology-related image
+    const response = await fetch(
+      "https://api.unsplash.com/photos/random?query=technology&client_id=0xyeWhR131b3sJyehsaTJOyXrmWPaA3EoqliymcQjVo&orientation=landscape"
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch image from Unsplash");
+    }
+    const imageData = await response.json();
+    const imageUrl = imageData.urls.regular;
+
     const formData = new FormData();
     formData.append("id", uid());
     formData.append("title", blogTitle);
     formData.append("content", blogContent);
+    formData.append("image_url", imageUrl); // Add image URL to form data
     formData.append("liked", false);
     formData.append("thumps_up", false);
     formData.append("created_at", Date.now());
@@ -64,7 +75,7 @@ const createBlog = async (blogTitle, blogContent) => {
     $q.loading.show();
 
     // Make API call to create a blog
-    const response = await createBlogApi(formData);
+    const createResponse = await createBlogApi(formData);
 
     // Hide loading indicator
     $q.loading.hide();
@@ -79,6 +90,7 @@ const createBlog = async (blogTitle, blogContent) => {
     // Redirect to home page
     router.push("/");
   } catch (error) {
+    // Handle error
     console.error("Error creating blog:", error);
 
     // Check if the error is a network error
@@ -101,6 +113,7 @@ const createBlog = async (blogTitle, blogContent) => {
     }
   }
 };
+
 const updateBlog = async () => {
   const updatedBlog = {
     id: blogId.value,

@@ -1,4 +1,3 @@
-
 const routes = [
   {
     path: "/",
@@ -7,6 +6,7 @@ const routes = [
       { path: "", component: () => import("pages/IndexPage.vue") },
       { path: "/new", component: () => import("pages/CreateBlog.vue") },
       { path: "/edit/:id", component: () => import("pages/CreateBlog.vue") },
+      { path: "/view/:id", component: () => import("pages/ViewBlog.vue") },
     ],
   },
 
@@ -18,4 +18,4 @@ const routes = [
   },
 ];
 
-export default routes
+export default routes;

@@ -119,6 +119,7 @@ app.post("/blog", (request, response) => {
         content: fields.content,
         created_at: parseInt(fields.created_at),
         updated_at: parseInt(fields.created_at),
+        image_url: fields.image_url,
       })
       .then(() => {
         sendPushNotification();

@@ -141,18 +141,6 @@ const displayGrantedNotification = () => {
         vibrate: [100, 50, 200],
         tag: "confirm-notification",
         renotify: true,
-        actions: [
-          {
-            action: "hello",
-            title: "Hello",
-            icon: "icons/icon-128x128.png",
-          },
-          {
-            action: "goodbye",
-            title: "Goodbye",
-            icon: "icons/icon-128x128.png",
-          },
-        ],
       });
     });
   }

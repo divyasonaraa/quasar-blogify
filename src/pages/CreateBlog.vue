@@ -10,7 +10,7 @@ import MainContainer from "src/components/MainContainer.vue";
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "IndexPage",
+  name: "CreatePage",
   components: {
     CreateBlog,
     MainContainer,
