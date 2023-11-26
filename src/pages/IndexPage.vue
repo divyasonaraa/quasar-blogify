@@ -80,7 +80,6 @@ const initNotificationBanner = () => {
   }
 };
 const enableNotifications = () => {
-  console.log("Called enableNotifications");
   if (pushNotificationsSupported.value) {
     Notification.requestPermission((result) => {
       console.log("result", result);

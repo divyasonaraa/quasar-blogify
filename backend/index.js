@@ -120,6 +120,8 @@ app.post("/blog", (request, response) => {
         created_at: parseInt(fields.created_at),
         updated_at: parseInt(fields.created_at),
         image_url: fields.image_url,
+        liked: fields.liked,
+        favorite: fields.favorite,
       })
       .then(() => {
         sendPushNotification();
