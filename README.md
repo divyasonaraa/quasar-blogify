@@ -1,8 +1,8 @@
 # Blogify App
 
 Welcome to Blogify - a powerful and feature-rich blogging application built with Quasar, Firebase, and Node.js. This app provides a seamless experience for creating, updating, deleting, liking, and favoriting blog posts. It also comes with Progressive Web App (PWA) features and push notifications to enhance user engagement.
-![Untitled design](https://github.com/divyasonaraa/quasar-blogify/assets/129390572/c1c84600-1e66-4b4b-a6ee-f8c166824f5d)
 
+![Untitled design](https://github.com/divyasonaraa/quasar-blogify/assets/129390572/cfa0a833-5e5d-4e9e-8b96-7fd8ebe01f8d)
 
 ## Demo
 
