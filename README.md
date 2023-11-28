@@ -53,7 +53,7 @@ Make sure you have the following installed:
 
    - Create a Firebase project on the [Firebase Console](https://console.firebase.google.com/).
    - Obtain your Firebase configuration (API Key, Auth Domain, Database URL, etc.).
-   - Replace the Firebase configuration in `src/boot/firebase.js` with your own.
+   - Replace the Firebase configuration with your own.
 
 5. Run the app in PWA mode:
 
@@ -92,9 +92,6 @@ The Node.js backend is included in the `backend` subfolder. Follow the instructi
 
 Feel free to contribute to the development of Blogify. Submit bug reports, suggest new features, or even contribute directly by submitting pull requests.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 
